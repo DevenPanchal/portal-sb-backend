@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,7 +81,7 @@ public class JobPortalController {
 		return jobPortalCrudService.saveUser(newUser);
 	}
 
-	@PostMapping("/filter-jobs-by-location")
+	@GetMapping("/filter-jobs-by-location")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Job> getFilteredJobsByLocation(@RequestParam(name = "location") String queryString) {
 		List<Job> filteredJobsByLocation = jobPortalCrudService.getFilteredJobsByLocation(queryString);
@@ -89,16 +90,16 @@ public class JobPortalController {
 
 	
 
-	@PostMapping("/filter-jobs-by-searchtext")
+	@GetMapping("/filter-jobs-by-searchtext")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Job> getFilteredJobsBySearchText(@RequestParam(name = "searchtext") String queryString) {
 		List<Job> filteredJobsBySearchText = jobPortalCrudService.getFilteredJobsBySearchText(queryString);
 		return filteredJobsBySearchText;
 	}
 
-//	@PostMapping("/users/apply/{jobid}")
-//	@ResponseStatus(HttpStatus.CREATED)
-//	public User user(@RequestBody Job user) {
-//		return jobPortalCrudService.saveAppliedJob(user);
-//	}
+	@PutMapping("/user/apply/{jobid}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public User user(@RequestBody Job user) {
+	return jobPortalCrudService.saveAppliedJob(user);
+}
 }

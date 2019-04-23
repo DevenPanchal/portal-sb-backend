@@ -1,5 +1,6 @@
 package com.neha.jobportal.jobportalbackend.controllers;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,8 @@ import com.neha.jobportal.jobportalbackend.entities.Job;
 import com.neha.jobportal.jobportalbackend.entities.User;
 import com.neha.jobportal.jobportalbackend.repositories.JobRepository;
 import com.neha.jobportal.jobportalbackend.services.JobPortalCrudService;
+import com.neha.jobportal.jobportalbackend.services.UserService;
+import com.neha.jobportal.jobportalbackend.utils.CustomErrorType;
 
 @RestController
 @CrossOrigin
@@ -29,7 +32,9 @@ public class JobPortalController {
 
 	@Autowired
 	private JobPortalCrudService jobPortalCrudService;
-	JobRepository jobRepository;
+
+
+	
 
 	@GetMapping("/jobs")
 	@ResponseStatus(HttpStatus.OK)
@@ -96,10 +101,16 @@ public class JobPortalController {
 		List<Job> filteredJobsBySearchText = jobPortalCrudService.getFilteredJobsBySearchText(queryString);
 		return filteredJobsBySearchText;
 	}
+	
 
-	@PutMapping("/user/apply/{jobid}")
+	
+
+	
+
+	/*@PutMapping("/user/apply/{jobid}")
     @ResponseStatus(HttpStatus.CREATED)
     public User user(@RequestBody Job user) {
-	return jobPortalCrudService.saveAppliedJob(user);
-}
+	return jobPortalCrudService.saveAppliedJob(user);}*/
+
+	
 }

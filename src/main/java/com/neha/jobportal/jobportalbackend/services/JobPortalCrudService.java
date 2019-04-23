@@ -58,6 +58,8 @@ public class JobPortalCrudService {
 
 	}
 
+	
+	
 //	public User saveAppliedJob(Job user) {
 //		return userRepository.save(user);
 //	}

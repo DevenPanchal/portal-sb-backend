@@ -7,4 +7,5 @@ import com.neha.jobportal.jobportalbackend.entities.User;
 @Repository
 public interface UserRespository extends JpaRepository<User, Long> {
 
+	public User findOneByUsername(String username);
 }

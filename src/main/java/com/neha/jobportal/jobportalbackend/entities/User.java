@@ -1,11 +1,14 @@
 package com.neha.jobportal.jobportalbackend.entities;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,25 +17,52 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import javax.persistence.JoinColumn;
 @Entity
 @Table(name = "user")
-public class User {
+@Scope("session")
+public class User implements UserDetails {
+
+	public User() {
+	
+	}
+
+	public User(Long userid, @NotNull String username, @NotNull String name, @NotNull String location, String photo,
+			String resume, String skills, String password, @NotNull String role, @NotNull String education,
+			Set<Job> jobs) {
+		
+		this.userid = userid;
+		this.username = username;
+		this.name = name;
+		this.location = location;
+		this.photo = photo;
+		this.resume = resume;
+		this.skills = skills;
+		this.password = password;
+		this.role = role;
+		this.education = education;
+		this.jobs = jobs;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "userid")
 	Long userid;
 
-	@Column(length = 100, name = "username")
+	// This is in fact the email user enters on the screen.
+	@Column(length = 100, name = "username",unique = true)
 	@NotNull
 	String username;
 
-	@Column(length = 100, name = "email")
-	@NotNull
-	String email;
 
 	@Column(length = 100, name = "name")
 	@NotNull
@@ -51,8 +81,9 @@ public class User {
 	@Column(name = "skills")
 	String skills;
 
-	@Column(name = "hashedpassword")
-	String hashedpassword;
+	@Column(name = "password")
+	@JsonProperty(access = Access.WRITE_ONLY)
+	String password;
 
 	@Column(length = 100, name = "role")
 	@NotNull
@@ -60,15 +91,15 @@ public class User {
 
 	@Column(length = 100, name = "education")
 	@NotNull
+	
 	String education;
 	
-	 @ManyToMany(cascade = { CascadeType.MERGE })
+	 @ManyToMany(cascade = { CascadeType.MERGE },fetch = FetchType.EAGER)
 	    @JoinTable(
 	        name = "userjob", 
 	        joinColumns = { @JoinColumn(name = "userid") }, 
 	        inverseJoinColumns = { @JoinColumn(name = "jobid") }
 	    )
-	 @JsonIgnore
 	Set<Job> jobs = new HashSet<>();
 	
 	
@@ -99,20 +130,6 @@ public class User {
 	 */
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	/**
@@ -185,19 +202,7 @@ public class User {
 		this.skills = skills;
 	}
 
-	/**
-	 * @return the hashedpassword
-	 */
-	public String getHashedpassword() {
-		return hashedpassword;
-	}
-
-	/**
-	 * @param hashedpassword the hashedpassword to set
-	 */
-	public void setHashedpassword(String hashedpassword) {
-		this.hashedpassword = hashedpassword;
-	}
+	
 
 	/**
 	 * @return the role
@@ -235,4 +240,58 @@ public class User {
 		this.jobs = jobs;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Override
+	public String toString() {
+		return "User [userid=" + userid + ", username=" + username + ", name=" + name + ", location=" + location
+				+ ", photo=" + photo + ", resume=" + resume + ", skills=" + skills + ", password=" + password
+				+ ", role=" + role + ", education=" + education + ", jobs=" + jobs + "]";
+	}
+
+	
+
+	@Override
+	@JsonIgnore
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@JsonIgnore
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Collection<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority(role));
+		return authorities;
+	}
+
+	
 }

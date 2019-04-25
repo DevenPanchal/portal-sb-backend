@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.neha.jobportal.jobportalbackend.entities.Job;
 import com.neha.jobportal.jobportalbackend.entities.User;
 import com.neha.jobportal.jobportalbackend.repositories.JobRepository;
-import com.neha.jobportal.jobportalbackend.repositories.UserRespository;
+import com.neha.jobportal.jobportalbackend.dao.UserRespository;
 
 @Service
 public class JobPortalCrudService {

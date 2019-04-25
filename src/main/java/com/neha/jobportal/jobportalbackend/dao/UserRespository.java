@@ -1,4 +1,4 @@
-package com.neha.jobportal.jobportalbackend.repositories;
+package com.neha.jobportal.jobportalbackend.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,4 +8,6 @@ import com.neha.jobportal.jobportalbackend.entities.User;
 public interface UserRespository extends JpaRepository<User, Long> {
 
 	public User findOneByUsername(String username);
+
+	
 }

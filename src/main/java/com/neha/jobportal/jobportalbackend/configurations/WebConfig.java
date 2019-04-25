@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -18,12 +19,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.neha.jobportal.jobportalbackend.services.AppUserDetailsService;
 
 @Configurable
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 // Modifying or overriding the default spring boot security.
 public class WebConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	AppUserDetailsService appUserDetailsService;
+	
+	@SuppressWarnings("deprecation")
+	@Bean
+	public static NoOpPasswordEncoder passwordEncoder() {
+	return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+	}
 
 	// This method is for overriding the default AuthenticationManagerBuilder.
 	// We can specify how the user details are kept in the application. It may
@@ -52,9 +59,12 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security",
-				"/swagger-ui.html/**", "/webjars/**", "/swagger-resources/configuration/ui",
-				"/swagger-resources/configuration/security");
+		/*
+		 * web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui",
+		 * "/swagger-resources", "/configuration/security", "/swagger-ui.html/**",
+		 * "/webjars/**", "/swagger-resources/configuration/ui",
+		 * "/swagger-resources/configuration/security");
+		 */
 	}
 
 	// This method is used for override HttpSecurity of the web Application.
@@ -65,11 +75,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 				// starts authorizing configurations
 				.authorizeRequests()
 				// ignoring the guest's urls "
-				.antMatchers("/account/register", "/account/login", "/logout", "/v2/api-docs", "/v2/api-docs",
+				.antMatchers("/account/register", "/account/login","/account/login/**", "/logout", "/v2/api-docs", "/v2/api-docs",
 						"/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html/**",
 						"/webjars/**", "/swagger-resources/configuration/ui",
-						"/swagger-resources/configuration/security", "/swagger-ui.html#/**",
-						"/swagger-ui.html#/job-portal-controller/**")
+						"/swagger-resources/configuration/security", "/api/**")
 				.permitAll()
 
 				// authenticate all remaining URLS

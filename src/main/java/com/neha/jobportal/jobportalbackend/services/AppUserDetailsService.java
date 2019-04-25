@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.neha.jobportal.jobportalbackend.entities.User;
-import com.neha.jobportal.jobportalbackend.repositories.UserRespository;
+import com.neha.jobportal.jobportalbackend.dao.UserRespository;
 
 
 
@@ -17,12 +17,12 @@ public class AppUserDetailsService implements UserDetailsService {
 
 	
 	@Autowired
-	private UserService userService;
+UserService userService;
 	
-
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userService.findUserByUsername(username);
-		return (UserDetails) user;
+		User user = userService.find(username);
+		return  user;
 	}
 
 }

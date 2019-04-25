@@ -16,8 +16,7 @@ import com.neha.jobportal.jobportalbackend.services.UserService;
 import com.neha.jobportal.jobportalbackend.utils.CustomErrorType;
 
 @RestController
-@CrossOrigin
-@RequestMapping("/account")
+@RequestMapping("account")
 public class AccountController {
 
 	@Autowired
@@ -26,13 +25,15 @@ public class AccountController {
 		@CrossOrigin
 		@PostMapping(value = "/register")
 		public ResponseEntity<?> createUser(@RequestBody User newUser) {
-			if (userService.findUserByUsername(newUser.getUsername()) != null) {
-				System.out.println("username Already exist " + newUser.getUsername());
+			System.out.println("/register called with " + newUser.toString());
+			// check email to only allow unregistered emails
+			if (userService.find(newUser.getUsername()) != null) {
+				System.out.println("username already exists " + newUser.getUsername());
 				return new ResponseEntity(
-						new CustomErrorType("user with username " + newUser.getUsername() + "already exist "),
+						new CustomErrorType("User with username " + newUser.getUsername() + "already exists "),
 						HttpStatus.CONFLICT);
 			}
-			newUser.setRole("Job Seeker");
+			//newUser.setRole("Job Seeker");
 			
 			return new ResponseEntity<User>(userService.save(newUser), HttpStatus.CREATED);
 		}
@@ -42,13 +43,13 @@ public class AccountController {
 		@CrossOrigin
 		@PostMapping(value = "/registerAsRecruiter")
 		public ResponseEntity<?> createRecruiter(@RequestBody User newUser) {
-			if (userService.findUserByUsername(newUser.getUsername()) != null) {
-				System.out.println("username Already exist " + newUser.getUsername());
+			if (userService.find(newUser.getUsername()) != null) {
+				System.out.println("username already exists " + newUser.getUsername());
 				return new ResponseEntity(
-						new CustomErrorType("user with username " + newUser.getUsername() + "already exist "),
+						new CustomErrorType("User with username " + newUser.getUsername() + "already exists "),
 						HttpStatus.CONFLICT);
 			}
-			newUser.setRole("Recruiter");
+		//	newUser.setRole("Recruiter");
 			
 			return new ResponseEntity<User>(userService.save(newUser), HttpStatus.CREATED);
 		}
@@ -57,7 +58,9 @@ public class AccountController {
 		@CrossOrigin
 		@RequestMapping("/login")
 		public Principal user(Principal principal) {
+           System.out.println("INSIDE /ACCOUNT/LOGIN");
 			System.out.println("user logged "+principal);
 			return principal;
 		}
+		
 }

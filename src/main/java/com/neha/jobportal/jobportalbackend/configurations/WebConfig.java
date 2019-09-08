@@ -85,9 +85,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().fullyAuthenticated().and()
 				/*
 				 * "/logout" will log the user out by invalidating the HTTP Session, cleaning up
-				 * any {link rememberMe()} authentication that was configured,
+				 * any {link rememberMe()} authentication that was configured and redirect to login page,
 				 */
-				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")).and()
+				
+				.logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")).logoutSuccessUrl("/account/login").and()
 				// enabling the basic authentication
 				.httpBasic().and()
 				// configuring the session on the server
